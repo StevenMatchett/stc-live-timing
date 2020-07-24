@@ -3,9 +3,10 @@ const axios = require('axios');
 
 
 export const getTiming = async (url) => {
-    const res = await axios.get(url);
+    let res = await axios.get(url);
+
     let parser = new DOMParser();
-    let doc = parser.parseFromString(res.data, "text/html");
+    let doc = parser.parseFromString(res.data.contents, "text/html");
     let data = {};
     let currentClass = "";
     doc.querySelectorAll("body > a > table:nth-child(3) > tbody > tr").forEach(tr=> {
