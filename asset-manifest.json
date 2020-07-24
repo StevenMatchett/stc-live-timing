@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/stc-live-timing/static/css/main.27fd15f6.chunk.css",
-    "main.js": "/stc-live-timing/static/js/main.377f7d62.chunk.js",
-    "main.js.map": "/stc-live-timing/static/js/main.377f7d62.chunk.js.map",
+    "main.js": "/stc-live-timing/static/js/main.596b6a1e.chunk.js",
+    "main.js.map": "/stc-live-timing/static/js/main.596b6a1e.chunk.js.map",
     "runtime-main.js": "/stc-live-timing/static/js/runtime-main.f6d13d16.js",
     "runtime-main.js.map": "/stc-live-timing/static/js/runtime-main.f6d13d16.js.map",
     "static/js/2.89d5c99d.chunk.js": "/stc-live-timing/static/js/2.89d5c99d.chunk.js",
     "static/js/2.89d5c99d.chunk.js.map": "/stc-live-timing/static/js/2.89d5c99d.chunk.js.map",
     "index.html": "/stc-live-timing/index.html",
-    "precache-manifest.4f7c7793a882e59b7eb9b2a17f4528c6.js": "/stc-live-timing/precache-manifest.4f7c7793a882e59b7eb9b2a17f4528c6.js",
+    "precache-manifest.50d62d5b2b2699bf926975ab5e445232.js": "/stc-live-timing/precache-manifest.50d62d5b2b2699bf926975ab5e445232.js",
     "service-worker.js": "/stc-live-timing/service-worker.js",
     "static/css/main.27fd15f6.chunk.css.map": "/stc-live-timing/static/css/main.27fd15f6.chunk.css.map",
     "static/js/2.89d5c99d.chunk.js.LICENSE.txt": "/stc-live-timing/static/js/2.89d5c99d.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.f6d13d16.js",
     "static/js/2.89d5c99d.chunk.js",
     "static/css/main.27fd15f6.chunk.css",
-    "static/js/main.377f7d62.chunk.js"
+    "static/js/main.596b6a1e.chunk.js"
   ]
 }
