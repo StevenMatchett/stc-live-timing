@@ -72,7 +72,7 @@ export const LiveTiming = (props) =>{
 
     useEffect(() => {
         async function fetchData() {
-            let results = await getData(getTiming("http://www.stcsolo.com/live/results_live.htm"));
+            let results = await getData(getTiming("https://www.stcsolo.com/live/results_live.htm"));
             let raw = getRaw(results)
             let pax = getPax(results)
             results['RAW'] = raw;
