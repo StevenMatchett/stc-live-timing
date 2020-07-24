@@ -3,7 +3,7 @@ const axios = require('axios');
 
 
 export const getTiming = async (url) => {
-    const res = await axios.get("http://tower.local:3000/"+url);
+    const res = await axios.get(url);
     let parser = new DOMParser();
     let doc = parser.parseFromString(res.data, "text/html");
     let data = {};
