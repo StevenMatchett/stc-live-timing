@@ -7,6 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { useStateValue } from './context/context';
 
 const useStyles = makeStyles({
   table: {
@@ -23,7 +24,8 @@ function createData(name, number, time, clazz, rawTimes) {
 }
 
 export function AutoXTable(props) {
-    const {data, name, showModal} = props
+    const {data, name} = props
+    const [, dispatch] = useStateValue();
     const rows = data.map(row => {
         return createData(row.name, row.number, row.time, row.clazz, row.rawTimes)
     })
@@ -39,7 +41,7 @@ export function AutoXTable(props) {
                     <Table className={classes.table} aria-label="simple table" style={{tableLayout: 'fixed'}}>
                         <TableHead>
                             <TableRow>
-                                <TableCell align="left">Position</TableCell>
+                                <TableCell style={{ width: 25 }} align="left">Position</TableCell>
                                 <TableCell align="left">Number</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell align="right">Time</TableCell>
@@ -52,7 +54,7 @@ export function AutoXTable(props) {
                                 <TableRow key={row.name}>
                                     <TableCell align="left">{position}</TableCell>
                                     <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
-                                    <TableCell onClick={()=>{showModal(row)}} component="th" scope="row">
+                                    <TableCell onClick={()=>dispatch({type: "SELECTED_DRIVER", data: row})} component="th" scope="row">
                                         <div style={{color:"blue", cursor: "pointer"}}>{row.name}</div>
                                     </TableCell>
                                     <TableCell align="right">{row.time}</TableCell>

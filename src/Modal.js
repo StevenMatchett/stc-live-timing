@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import {DriverTable} from './DriverTable';
+import { useStateValue } from './context/context';
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -24,19 +25,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function DriverModal(props) {
+export const DriverModal = () => {
+    const [{selected}, dispatch] = useStateValue()
     const classes = useStyles();
     const [modalStyle] = React.useState(getModalStyle);
 
+    if (!selected){
+        return <div/>;
+    }
+    
     return (
     <div>
         <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
-        open={props.open}
-        onClose={props.close}>
+        open={ selected ? true : false }
+        onClose={()=>dispatch({ type: 'DESELECT_DRIVER'})}>
             <div style={modalStyle} className={classes.paper}>
-                <DriverTable {...props.driver}/>
+                <DriverTable />
             </div>
         </Modal>
     </div>

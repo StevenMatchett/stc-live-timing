@@ -1,4 +1,5 @@
 import React from 'react';
+import { useStateValue } from './context/context'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,11 +19,10 @@ const useStyles = makeStyles({
 });
 
 
-
-
 export function DriverTable(props) {
-    const {clazz, name, rawTimes} = props;
     const classes = useStyles();
+    const [{selected}, ] = useStateValue()
+    const {clazz, name, rawTimes} = selected;
     let position = 0;
 
     return (
