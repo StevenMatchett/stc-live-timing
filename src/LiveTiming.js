@@ -88,6 +88,9 @@ export const LiveTiming = (props) =>{
                 {data && <AutoXTable class="col" data={data["PAX"]} name={"PAX"}/>}
                 {data && <AutoXTable class="col" data={data["RAW"]} name={"RAW"}/>}
                 {data && Object.keys(data).map(className => {
+                    if (className === "RAW" || className === "PAX") {
+                        return null
+                    };
                     return (
                         <AutoXTable class="col" data={data[className]} name={className}/>
                     )
