@@ -7,10 +7,11 @@ export class Time{
             return time;
         }
     }
-    constructor(clazz, name, time, number){
+    constructor(clazz, name, time, number, rawTimes){
         this.clazz = clazz;
         this.name = name;
         this.time = this.parseTime(time);
         this.number = number;
+        this.rawTimes = rawTimes;
     }
 }

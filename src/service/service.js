@@ -21,8 +21,10 @@ export const getTiming = async (url) => {
             times = times.slice(0,times.length-2);
 
             let actualTimes = [];
+            let rawTimes = [];
             times.forEach(timeHtml => {
                 let time = timeHtml.innerText.split("+").map(s=>s.trim());
+                rawTimes.push(timeHtml.innerText.trim());
                 if (time.length === 1){
                     if (time[0] === ""){
                         return;
@@ -38,8 +40,8 @@ export const getTiming = async (url) => {
                     return;
                 }
             });
-            let time = actualTimes.sort((a,b)=>a-b)[0];
-            data[currentClass].push(new Time(clazz,name,time, number));
+            let bestTime = actualTimes.sort((a,b)=>a-b)[0];
+            data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes));
         }
     });
 
