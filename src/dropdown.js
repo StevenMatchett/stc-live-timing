@@ -16,10 +16,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Dropdown = ({clazzes,clazz}) => {
+export const Dropdown = ({clazzes}) => {
   const classes = useStyles();
-
-  const classNames = ["PAX", "RAW", ...Object.keys(clazzes)];
   const [{dropdown}, dispatch] = useStateValue();
 
 
@@ -27,9 +25,11 @@ export const Dropdown = ({clazzes,clazz}) => {
   return (
       <FormControl className={classes.formControl}>
         <InputLabel>Class</InputLabel>
-        <Select value={dropdown} onChange={(data,a)=>{dispatch({type:"UPDATE_DROPDOWN", data:data.target.value})}}>
-            {classNames.map(cl => {
-                console.log(cl)
+        <Select value={dropdown} onChange={(data)=>{
+            window.history.pushState("", "", `${window.location.pathname}?class=${data.target.value}` );
+            dispatch({type:"UPDATE_DROPDOWN", data:data.target.value
+          })}}>
+            {clazzes.map(cl => {
                 return <MenuItem value={cl}>{cl.toUpperCase()}</MenuItem>
             })}
         </Select>

@@ -67,13 +67,26 @@ const getPax = (results) => {
     return raw
 }
 
-
-
 export const LiveTiming = (props) =>{
     const [data, setData] = useState();
+    const [classes, setClasses] = useState("");
     const getData = async (promise) => {
         return await promise;
     }
+
+    const checkurl = () => {
+        if (window.location.search && window.location.search.includes("?class=")){
+            let val = window.location.search.replace("?class=","").trim();
+            console.log(val)
+            if (classes.includes(val)){
+                dispatch({type:"UPDATE_DROPDOWN", data:val})
+            }
+        } else {
+            dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
+        }
+    }
+
+    const [{dropdown}, dispatch] = useStateValue();
 
     useEffect(() => {
         async function fetchData() {
@@ -83,29 +96,27 @@ export const LiveTiming = (props) =>{
             results['RAW'] = raw;
             results['PAX'] = pax;
             setData(results);
+            let classList = Object.keys(results);
+            setClasses(classList)
+            
         }
         fetchData();
     },[]);
 
-    const [{dropdown}, ] = useStateValue();
-
+    
+    window.onpopstate = e => checkurl();
+    
 
     return (
         <React.Fragment>
-            {data && <DriverModal />}
-            <Dropdown clazzes={paxMap} />
-            {data && <AutoXTable class="col" data={data[dropdown]} name={dropdown} />}
-            
-            {/* {data && <AutoXTable class="col" data={data["PAX"]} name={"PAX"} />}
-            {data && <AutoXTable class="col" data={data["RAW"]} name={"RAW"} />}
-            {data && Object.keys(data).map(className => {
-                if (className === "RAW" || className === "PAX") {
-                    return null
-                };
-                return (
-                    <AutoXTable class="col" data={data[className]} name={className} />
-                )
-            })} */}
+            {data && classes && 
+                <div>
+                    <DriverModal />
+                    <Dropdown clazzes={classes} />
+                    <AutoXTable class="col" data={data[dropdown]} name={dropdown} />
+                </div>
+            }
+         
 
 
         </React.Fragment>
