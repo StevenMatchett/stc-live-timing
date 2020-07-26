@@ -1,14 +1,18 @@
 import {Time} from './time';
+
 const axios = require('axios');
 
 
-export const getTiming = async (url) => {
+export const getTiming = async (url, dispatch) => {
     let res = await axios.get(url);
 
     let parser = new DOMParser();
     let doc = parser.parseFromString(res.data.contents, "text/html");
     let data = {};
     let currentClass = "";
+
+    let conesHit = 0;
+    let numberOfRun = 0;
     doc.querySelectorAll("body > a > table:nth-child(4) > tbody > tr").forEach(tr=> {
         if (tr.querySelector("th")){
             currentClass = tr.querySelector("a").name;
@@ -35,6 +39,7 @@ export const getTiming = async (url) => {
                     }
                     let raw = parseFloat(time,10);
                     actualTimes.push(raw);
+                    numberOfRun++;
                     if (raw < fastest){
                         fastest = raw;
                         fastestIndex = index;
@@ -46,6 +51,8 @@ export const getTiming = async (url) => {
                     }
                     let cones = parseFloat(time[1],10);
                     let raw = parseFloat(time,10) + cones * 2;
+                    conesHit+= cones;
+                    numberOfRun++;
                     actualTimes.push(raw);
                     if (raw < fastest){
                         fastest = raw;
@@ -57,6 +64,8 @@ export const getTiming = async (url) => {
             data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes, car, fastestIndex));
         }
     });
+
+    dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun}})
 
     
     return data;

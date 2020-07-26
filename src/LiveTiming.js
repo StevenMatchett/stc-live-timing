@@ -70,14 +70,17 @@ const getPax = (results) => {
 export const LiveTiming = (props) =>{
     const [data, setData] = useState();
     const [classes, setClasses] = useState("");
+    const [topPax, setTopPax] = useState("");
+
     const getData = async (promise) => {
         return await promise;
     }
 
     const checkurl = () => {
+        console.log(window.location.search)
         if (window.location.search && window.location.search.includes("?class=")){
             let val = window.location.search.replace("?class=","").trim();
-            if (classes.includes(val)){
+            if (Object.keys(paxMap).includes(val)){
                 dispatch({type:"UPDATE_DROPDOWN", data:val})
             }
         } else {
@@ -89,15 +92,17 @@ export const LiveTiming = (props) =>{
 
     useEffect(() => {
         async function fetchData() {
-            let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime()));
+            let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
             let raw = getRaw(results)
             let pax = getPax(results)
             results['RAW'] = raw;
             results['PAX'] = pax;
+            setTopPax(results['PAX'][0].time)
             setData(results);
             let classList = Object.keys(results);
             classList = ["PAX", "RAW", ...classList.slice(0,classList.length-2)]
             setClasses(classList)
+            checkurl();
             
         }
         fetchData();
@@ -105,15 +110,24 @@ export const LiveTiming = (props) =>{
 
     
     window.onpopstate = e => checkurl();
-    
 
+    if (data && classes && !classes.includes(dropdown)){
+        dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
+    }
+    
     return (
         <React.Fragment>
             {data && classes && 
                 <div>
                     <DriverModal />
                     <Dropdown clazzes={classes} />
-                    <AutoXTable class="col" data={data[dropdown]} name={dropdown} />
+                    {dropdown !== 'PAX' && dropdown !== 'RAW' &&
+                        <div>
+                            <br/>
+                            <div>Time needed to match top PAX: {(topPax/paxMap[dropdown]).toFixed(3) }</div>
+                        </div>
+                    }
+                    <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} />
                 </div>
             }
          

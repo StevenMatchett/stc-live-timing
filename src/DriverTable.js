@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 export function DriverTable(props) {
     const classes = useStyles();
     const [{selected}, ] = useStateValue()
-    const {clazz, name, rawTimes, car} = selected;
+    const {clazz, name, rawTimes, car, fastestIndex} = selected;
     let position = 0;
 
     return (
@@ -39,12 +39,16 @@ export function DriverTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rawTimes.map((row) => {
+                            {rawTimes.map((row, index) => {
                                 position++;
                                 return (
                                 <TableRow>
                                     <TableCell align="left">{position}</TableCell>
-                                    <TableCell align="left">{row}</TableCell>
+                                    {fastestIndex+1 === position ?
+                                        <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row}</TableCell>
+                                        :
+                                        <TableCell align="left">{row}</TableCell>
+                                    }
                                 </TableRow>
                             )})}
                         </TableBody>
