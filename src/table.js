@@ -36,24 +36,24 @@ export function AutoXTable(props) {
                 <div>
                     <Table className={classes.table} aria-label="simple table" >
                         <TableHead>
-                            <TableRow>
-                                <TableCell style={{ width: 25 }} align="left">Position</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell align="left">Number</TableCell>
-                                <TableCell align="left">Best</TableCell>
-                                <TableCell align="left">1</TableCell>
-                                <TableCell align="left">2</TableCell>
-                                <TableCell align="left">3</TableCell>
-                                <TableCell align="left">4</TableCell>
-                                <TableCell align="left">5</TableCell>
-                                <TableCell align="left">6</TableCell>
+                            <TableRow style={{ background : "gray"}}>
+                                <TableCell style={{ width: 25, color:"white" }} align="left">Position</TableCell>
+                                <TableCell style={{ color : "white"}} >Name</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Number</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Best</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">1</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">2</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">3</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">4</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">5</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">6</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {rows.map((row,index) => {
                                 position++;
                                 return (
-                                <TableRow key={row.name} style ={ index % 2 === 0 ? { background : "#f2f2f2" }: {}    }>
+                                <TableRow key={row.name} style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
                                     <TableCell align="left">{position}</TableCell>
                                     <TableCell onClick={()=>dispatch({type: "SELECTED_DRIVER", data: row})} component="th" scope="row">
                                         <div style={{color:"blue", cursor: "pointer"}}>{row.name}</div>
