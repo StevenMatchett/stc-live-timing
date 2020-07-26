@@ -18,7 +18,7 @@ const getRaw = (results) => {
                 runTime = (time.time / paxMap[clazz]).toFixed(3);
             }
             
-            return new Time(time.clazz,time.name,runTime,time.number,time.rawTimes);
+            return new Time(time.clazz,time.name,runTime,time.number,time.rawTimes, time.car);
         })
     }
 
@@ -41,13 +41,13 @@ const getRaw = (results) => {
 const getPax = (results) => {
     const fixNovice = (times) => {
         return times.map(time=>{
-            return new Time(time.clazz,time.name,time.time,time.number, time.rawTimes);
+            return new Time(time.clazz,time.name,time.time,time.number, time.rawTimes, time.car);
         })
     }
 
     const applyPax = (times, clazz) => {
         return times.map(time=>{
-            return new Time(time.clazz,time.name,(time.time*paxMap[clazz]).toFixed(3),time.number, time.rawTimes);
+            return new Time(time.clazz,time.name,(time.time*paxMap[clazz]).toFixed(3),time.number, time.rawTimes, time.car);
         })
     }
 
@@ -77,7 +77,6 @@ export const LiveTiming = (props) =>{
     const checkurl = () => {
         if (window.location.search && window.location.search.includes("?class=")){
             let val = window.location.search.replace("?class=","").trim();
-            console.log(val)
             if (classes.includes(val)){
                 dispatch({type:"UPDATE_DROPDOWN", data:val})
             }
@@ -97,6 +96,7 @@ export const LiveTiming = (props) =>{
             results['PAX'] = pax;
             setData(results);
             let classList = Object.keys(results);
+            classList = ["PAX", "RAW", ...classList.slice(0,classList.length-2)]
             setClasses(classList)
             
         }

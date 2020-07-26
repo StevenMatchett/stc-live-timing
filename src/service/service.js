@@ -17,6 +17,7 @@ export const getTiming = async (url) => {
             let clazz = tr.querySelector("td:nth-child(2)").innerText;
             let number = tr.querySelector("td:nth-child(3)").innerText;
             let name = tr.querySelector("td:nth-child(4)").innerText;
+            let car = tr.querySelector("td:nth-child(5)").innerText;
             let times = Array.prototype.slice.call(tr.querySelectorAll("td:nth-child(n+7)"));
             times = times.slice(0,times.length-2);
 
@@ -41,7 +42,7 @@ export const getTiming = async (url) => {
                 }
             });
             let bestTime = actualTimes.sort((a,b)=>a-b)[0];
-            data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes));
+            data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes, car));
         }
     });
 

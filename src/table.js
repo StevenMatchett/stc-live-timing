@@ -11,22 +11,20 @@ import { useStateValue } from './context/context';
 
 const useStyles = makeStyles({
     table: {
-      minWidth: 500,
-     
-      
+      minWidth: 500, 
     },
     height: "35px"
   });
 
-function createData(name, number, time, clazz, rawTimes) {
-  return { name, number, time, clazz, rawTimes };
+function createData(name, number, time, clazz, rawTimes, car) {
+  return { name, number, time, clazz, rawTimes, car};
 }
 
 export function AutoXTable(props) {
     const { data } = props
     const [, dispatch] = useStateValue();
     const rows = data.map(row => {
-        return createData(row.name, row.number, row.time, row.clazz, row.rawTimes)
+        return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car)
     })
 
     const classes = useStyles();

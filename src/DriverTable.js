@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 export function DriverTable(props) {
     const classes = useStyles();
     const [{selected}, ] = useStateValue()
-    const {clazz, name, rawTimes} = selected;
+    const {clazz, name, rawTimes, car} = selected;
     let position = 0;
 
     return (
@@ -30,6 +30,7 @@ export function DriverTable(props) {
             <TableContainer component={Paper}>
                 <div style={{ overflow: 'auto'}}>
                     <h2 style={{ marginLeft: "15px" }}>{name} ({clazz.toUpperCase()})</h2>
+                    <h4 style={{ marginLeft: "15px" }}>{car}</h4>
                     <Table className={classes.table} aria-label="simple table" style={{tableLayout: 'fixed'}}>
                         <TableHead>
                             <TableRow>
