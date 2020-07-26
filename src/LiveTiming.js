@@ -89,7 +89,7 @@ export const LiveTiming = (props) =>{
         }
     }
 
-    const [{dropdown, conesHit}, dispatch] = useStateValue();
+    const [{dropdown, conesHit, runCount}, dispatch] = useStateValue();
 
     useEffect(() => {
         async function fetchData() {
@@ -131,6 +131,7 @@ export const LiveTiming = (props) =>{
                         :
                             <div>
                                 <br/>
+                                <div>Number of runs: {runCount} </div>
                                 <div>Cones hit: {conesHit}</div>
                             </div>
                     }
