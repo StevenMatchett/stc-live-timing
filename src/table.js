@@ -38,8 +38,8 @@ export function AutoXTable(props) {
                         <TableHead>
                             <TableRow>
                                 <TableCell style={{ width: 25 }} align="left">Position</TableCell>
-                                <TableCell align="left">Number</TableCell>
                                 <TableCell>Name</TableCell>
+                                <TableCell align="left">Number</TableCell>
                                 <TableCell align="left">Best</TableCell>
                                 <TableCell align="left">1</TableCell>
                                 <TableCell align="left">2</TableCell>
@@ -50,15 +50,15 @@ export function AutoXTable(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => {
+                            {rows.map((row,index) => {
                                 position++;
                                 return (
-                                <TableRow key={row.name}>
+                                <TableRow key={row.name} style ={ index % 2 === 0 ? { background : "#f2f2f2" }: {}    }>
                                     <TableCell align="left">{position}</TableCell>
-                                    <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
                                     <TableCell onClick={()=>dispatch({type: "SELECTED_DRIVER", data: row})} component="th" scope="row">
                                         <div style={{color:"blue", cursor: "pointer"}}>{row.name}</div>
                                     </TableCell>
+                                    <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
                                     { [0,1,2,3,4,5].map(index => {
                                         if (row.fastestIndex === index){
