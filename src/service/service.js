@@ -19,30 +19,42 @@ export const getTiming = async (url) => {
             let name = tr.querySelector("td:nth-child(4)").innerText;
             let car = tr.querySelector("td:nth-child(5)").innerText;
             let times = Array.prototype.slice.call(tr.querySelectorAll("td:nth-child(n+7)"));
+
             times = times.slice(0,times.length-2);
 
             let actualTimes = [];
             let rawTimes = [];
-            times.forEach(timeHtml => {
+            let fastest = 999;
+            let fastestIndex = -1;
+            times.forEach((timeHtml,index) => {
                 let time = timeHtml.innerText.split("+").map(s=>s.trim());
                 rawTimes.push(timeHtml.innerText.trim());
                 if (time.length === 1){
                     if (time[0] === ""){
                         return;
                     }
-                    actualTimes.push(parseFloat(time,10));
+                    let raw = parseFloat(time,10);
+                    actualTimes.push(raw);
+                    if (raw < fastest){
+                        fastest = raw;
+                        fastestIndex = index;
+                    }
                 } else if (time.length === 2) {
                     if (time[1] === "dnf" || time[1] === "dns" ){
                         actualTimes.push(999);
                         return;
                     }
                     let cones = parseFloat(time[1],10);
-                    actualTimes.push(parseFloat(time,10) + cones * 2);
-                    return;
+                    let raw = parseFloat(time,10) + cones * 2;
+                    actualTimes.push(raw);
+                    if (raw < fastest){
+                        fastest = raw;
+                        fastestIndex = index;
+                    }
                 }
             });
             let bestTime = actualTimes.sort((a,b)=>a-b)[0];
-            data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes, car));
+            data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes, car, fastestIndex));
         }
     });
 

@@ -16,15 +16,15 @@ const useStyles = makeStyles({
     height: "35px"
   });
 
-function createData(name, number, time, clazz, rawTimes, car) {
-  return { name, number, time, clazz, rawTimes, car};
+function createData(name, number, time, clazz, rawTimes, car, fastestIndex) {
+  return { name, number, time, clazz, rawTimes, car, fastestIndex};
 }
 
 export function AutoXTable(props) {
     const { data } = props
     const [, dispatch] = useStateValue();
     const rows = data.map(row => {
-        return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car)
+        return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car, row.fastestIndex)
     })
 
     const classes = useStyles();
@@ -60,14 +60,16 @@ export function AutoXTable(props) {
                                         <div style={{color:"blue", cursor: "pointer"}}>{row.name}</div>
                                     </TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
+                                    { [0,1,2,3,4,5].map(index => {
+                                         console.log(row.fastestIndex)
+                                        if (row.fastestIndex === index){
+                                            return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
+                                        } else {
+                                            return <TableCell align="left">{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
+                                        }
 
-                                    <TableCell align="left">{row.rawTimes.length > 0 ? row.rawTimes[0] : ""}</TableCell>
-                                    <TableCell align="left">{row.rawTimes.length > 1 ? row.rawTimes[1] : ""}</TableCell>
-                                    <TableCell align="left">{row.rawTimes.length > 2 ? row.rawTimes[2] : ""}</TableCell>
-                                    <TableCell align="left">{row.rawTimes.length > 3 ? row.rawTimes[3] : ""}</TableCell>
-                                    <TableCell align="left">{row.rawTimes.length > 4 ? row.rawTimes[4] : ""}</TableCell>
-                                    <TableCell align="left">{row.rawTimes.length > 5 ? row.rawTimes[5] : ""}</TableCell>
-
+                                    })}
+                                
                                     
                                 </TableRow>
                             )})}
