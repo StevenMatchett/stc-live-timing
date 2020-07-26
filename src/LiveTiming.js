@@ -77,10 +77,11 @@ export const LiveTiming = (props) =>{
     }
 
     const checkurl = () => {
-        console.log(window.location.search)
         if (window.location.search && window.location.search.includes("?class=")){
             let val = window.location.search.replace("?class=","").trim();
             if (Object.keys(paxMap).includes(val)){
+                dispatch({type:"UPDATE_DROPDOWN", data:val})
+            } else if (val === "RAW"){
                 dispatch({type:"UPDATE_DROPDOWN", data:val})
             }
         } else {
@@ -88,7 +89,7 @@ export const LiveTiming = (props) =>{
         }
     }
 
-    const [{dropdown}, dispatch] = useStateValue();
+    const [{dropdown, conesHit}, dispatch] = useStateValue();
 
     useEffect(() => {
         async function fetchData() {
@@ -121,11 +122,17 @@ export const LiveTiming = (props) =>{
                 <div>
                     <DriverModal />
                     <Dropdown clazzes={classes} />
-                    {dropdown !== 'PAX' && dropdown !== 'RAW' &&
-                        <div>
-                            <br/>
-                            <div>Time needed to match top PAX: {(topPax/paxMap[dropdown]).toFixed(3) }</div>
-                        </div>
+                    {dropdown !== 'PAX' && dropdown !== 'RAW'
+                        ?
+                            <div>
+                                <br/>
+                                <div>Time needed to match top PAX: {(topPax/paxMap[dropdown]).toFixed(3) }</div>
+                            </div>
+                        :
+                            <div>
+                                <br/>
+                                <div>Cones hit: {conesHit}</div>
+                            </div>
                     }
                     <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} />
                 </div>

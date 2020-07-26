@@ -61,7 +61,6 @@ export function AutoXTable(props) {
                                     </TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
                                     { [0,1,2,3,4,5].map(index => {
-                                         console.log(row.fastestIndex)
                                         if (row.fastestIndex === index){
                                             return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
                                         } else {
