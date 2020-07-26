@@ -1,12 +1,10 @@
-
-
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { useStateValue } from './context/context'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -18,20 +16,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Dropdown = ({clazzes,clazz, callback}) => {
+export const Dropdown = ({clazzes,clazz}) => {
   const classes = useStyles();
+
+  const classNames = ["PAX", "RAW", ...Object.keys(clazzes)];
+  const [{dropdown}, dispatch] = useStateValue();
 
 
 
   return (
       <FormControl className={classes.formControl}>
         <InputLabel>Class</InputLabel>
-        <Select value={clazz} onChange={callback}>
-            {clazzes.map(cl => {
+        <Select value={dropdown} onChange={(data,a)=>{dispatch({type:"UPDATE_DROPDOWN", data:data.target.value})}}>
+            {classNames.map(cl => {
+                console.log(cl)
                 return <MenuItem value={cl}>{cl.toUpperCase()}</MenuItem>
             })}
         </Select>
-        <FormHelperText>Select view</FormHelperText>
       </FormControl>
   );
 };
