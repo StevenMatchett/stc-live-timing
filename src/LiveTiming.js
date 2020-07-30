@@ -122,6 +122,8 @@ export const LiveTiming = (props) =>{
                 <div>
                     <DriverModal />
                     <Dropdown clazzes={classes} />
+                    <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} href="mailto:gosefroba22@gmail.com">Issue or Suggestion?</a>  
+
                     {dropdown !== 'PAX' && dropdown !== 'RAW'
                         ?
                             <div>
