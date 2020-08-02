@@ -13,12 +13,17 @@ const getRaw = (results) => {
     const fixNovice = (times) => {
         return times.map(time=>{
             let runTime = time.time
+            let clazz = time.clazz.substring(1);
             if (runTime!== 999){
-                let clazz = time.clazz.substring(1);
+
                 runTime = (time.time / paxMap[clazz]).toFixed(3);
             }
-            
-            return new Time(time.clazz,time.name,runTime,time.number,time.rawTimes, time.car, time.fastestIndex);
+            let noviceTimes = time.rawTimes.map(time=>{
+                time = time.split("+")[0]
+                console.log(paxMap[clazz])
+                return (time/paxMap[clazz]).toFixed(3)
+            })
+            return new Time(time.clazz,time.name,runTime,time.number,noviceTimes, time.car, time.fastestIndex);
         })
     }
 
@@ -41,6 +46,7 @@ const getRaw = (results) => {
 const getPax = (results) => {
     const fixNovice = (times) => {
         return times.map(time=>{
+            
             return new Time(time.clazz,time.name,time.time,time.number, time.rawTimes, time.car, time.fastestIndex);
         })
     }

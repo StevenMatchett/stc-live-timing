@@ -31,6 +31,7 @@ export function AutoXTable(props) {
 
     const classes = useStyles();
     let position = 0;
+    let diff = 0;
 
     return (
         <React.Fragment>    
@@ -43,6 +44,7 @@ export function AutoXTable(props) {
                                 <TableCell style={{ color : "white"}} >Name</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Number</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Best</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Diff</TableCell>
                                 { (new Array(maxRuns)).fill().map( (em, index) => {
                                     return <TableCell style={{ color : "white"}} align="left">{index+1}</TableCell>
                                 })}
@@ -60,6 +62,11 @@ export function AutoXTable(props) {
                                     </TableCell>
                                     <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
+                                    <TableCell>{row && row.fastestIndex && row.rawTimes && 
+                                        
+                                        index === 0 ? 0 : (rows[index-1].time - row.time).toFixed(3)
+                                    }
+                                    </TableCell>
                                     { (new Array(maxRuns)).fill().map( (em, index) => {
                                         if (row.fastestIndex === index){
                                             return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
