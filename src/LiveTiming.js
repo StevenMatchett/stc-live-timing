@@ -112,13 +112,14 @@ export const LiveTiming = (props) =>{
     
     window.onpopstate = e => checkurl();
 
-    if (data && classes && !classes.includes(dropdown)){
-        dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
-    }
+    // if (data && classes && !classes.includes(dropdown)){
+    //     dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
+    // }
+  
     
     return (
         <React.Fragment>
-            {data && classes && 
+            {data && classes && dropdown &&
                 <div>
                     <DriverModal />
                     <Dropdown clazzes={classes} />

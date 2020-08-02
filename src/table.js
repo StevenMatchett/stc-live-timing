@@ -21,9 +21,11 @@ function createData(name, number, time, clazz, rawTimes, car, fastestIndex) {
 }
 
 export function AutoXTable(props) {
-    const { data } = props
-    const [, dispatch] = useStateValue();
-    const rows = data.map(row => {
+
+    let { data, name } = props
+    const [{maxRuns}, dispatch] = useStateValue();
+
+    let rows = data.map(row => {
         return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car, row.fastestIndex)
     })
 
@@ -41,12 +43,10 @@ export function AutoXTable(props) {
                                 <TableCell style={{ color : "white"}} >Name</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Number</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Best</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">1</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">2</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">3</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">4</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">5</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">6</TableCell>
+                                { (new Array(maxRuns)).fill().map( (em, index) => {
+                                    return <TableCell style={{ color : "white"}} align="left">{index+1}</TableCell>
+                                })}
+                            
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -60,7 +60,7 @@ export function AutoXTable(props) {
                                     </TableCell>
                                     <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
-                                    { [0,1,2,3,4,5].map(index => {
+                                    { (new Array(maxRuns)).fill().map( (em, index) => {
                                         if (row.fastestIndex === index){
                                             return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
                                         } else {
@@ -68,8 +68,6 @@ export function AutoXTable(props) {
                                         }
 
                                     })}
-                                
-                                    
                                 </TableRow>
                             )})}
                         </TableBody>

@@ -10,7 +10,7 @@ export const getTiming = async (url, dispatch) => {
     let doc = parser.parseFromString(res.data.contents, "text/html");
     let data = {};
     let currentClass = "";
-
+    let maxNumberOfRuns = 0;
     let conesHit = 0;
     let numberOfRun = 0;
     doc.querySelectorAll("body > a > table:nth-child(4) > tbody > tr").forEach(tr=> {
@@ -50,6 +50,7 @@ export const getTiming = async (url, dispatch) => {
                         return;
                     }
                     let cones = parseFloat(time[1],10);
+                    if (isNaN(cones)) cones = 0;
                     let raw = parseFloat(time,10) + cones * 2;
                     conesHit+= cones;
                     numberOfRun++;
@@ -62,10 +63,13 @@ export const getTiming = async (url, dispatch) => {
             });
             let bestTime = actualTimes.sort((a,b)=>a-b)[0];
             data[currentClass].push(new Time(clazz,name,bestTime, number, rawTimes, car, fastestIndex));
+            if (rawTimes.length > maxNumberOfRuns){
+                maxNumberOfRuns = rawTimes.length;
+            }
         }
     });
 
-    dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun}})
+    dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun, maxRuns: maxNumberOfRuns}})
 
     
     return data;
