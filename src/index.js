@@ -8,7 +8,7 @@ import { reducer } from './context/reducer'
 
 ReactDOM.render(
   <React.StrictMode>
-    <StateProvider initialState={{selected:null}} reducer={reducer} >
+    <StateProvider initialState={{selected:null, dropdown: "PAX"}} reducer={reducer} >
       <LiveTiming />
     </StateProvider>
   </React.StrictMode>,

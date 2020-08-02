@@ -72,6 +72,7 @@ export const LiveTiming = (props) =>{
     const [classes, setClasses] = useState("");
     const [topPax, setTopPax] = useState("");
 
+
     const getData = async (promise) => {
         return await promise;
     }
@@ -90,7 +91,6 @@ export const LiveTiming = (props) =>{
     }
 
     const [{dropdown, conesHit, runCount}, dispatch] = useStateValue();
-
     useEffect(() => {
         async function fetchData() {
             let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
@@ -108,14 +108,8 @@ export const LiveTiming = (props) =>{
         }
         fetchData();
     },[]);
-
     
     window.onpopstate = e => checkurl();
-
-    // if (data && classes && !classes.includes(dropdown)){
-    //     dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
-    // }
-  
     
     return (
         <React.Fragment>

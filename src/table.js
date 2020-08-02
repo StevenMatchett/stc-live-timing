@@ -53,7 +53,7 @@ export function AutoXTable(props) {
                             {rows.map((row,index) => {
                                 position++;
                                 return (
-                                <TableRow key={row.name} style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
+                                <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
                                     <TableCell align="left">{position}</TableCell>
                                     <TableCell onClick={()=>dispatch({type: "SELECTED_DRIVER", data: row})} component="th" scope="row">
                                         <div style={{color:"blue", cursor: "pointer"}}>{row.name}</div>
