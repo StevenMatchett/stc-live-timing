@@ -28,11 +28,12 @@ export function AutoXTable(props) {
     let rows = data.map(row => {
         return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car, row.fastestIndex)
     })
-
+    let topPaxtime = null;
+    if (rows.length > 1 && name === 'PAX'){
+        topPaxtime = rows[0].time;
+    }
     const classes = useStyles();
     let position = 0;
-    let diff = 0;
-
     return (
         <React.Fragment>    
             <TableContainer component={Paper}>
@@ -45,10 +46,11 @@ export function AutoXTable(props) {
                                 <TableCell style={{ color : "white"}} align="left">Number</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Best</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Diff</TableCell>
+                                
                                 { (new Array(maxRuns)).fill().map( (em, index) => {
                                     return <TableCell style={{ color : "white"}} align="left">{index+1}</TableCell>
                                 })}
-                            
+                                {topPaxtime && <TableCell style={{ color : "white"}} align="left">DOTY Points</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -63,10 +65,12 @@ export function AutoXTable(props) {
                                     <TableCell align="left">{row.number + " " + row.clazz.toUpperCase()}</TableCell>
                                     <TableCell align="left">{row.time}</TableCell>
                                     <TableCell>{row && row.fastestIndex && row.rawTimes && 
-                                        
-                                        index === 0 ? 0 : (rows[index-1].time - row.time).toFixed(3)
+                                        index === 0 || !rows[index-1] ? 0 : (rows[index-1].time - row.time).toFixed(3)
                                     }
-                                    </TableCell>
+                                     </TableCell>
+                                   
+
+                                   
                                     { (new Array(maxRuns)).fill().map( (em, index) => {
                                         if (row.fastestIndex === index){
                                             return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
@@ -75,6 +79,7 @@ export function AutoXTable(props) {
                                         }
 
                                     })}
+                                    {topPaxtime && <TableCell>{(topPaxtime/row.time*1000).toFixed(3)}</TableCell>}
                                 </TableRow>
                             )})}
                         </TableBody>
