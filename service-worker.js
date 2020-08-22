@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/stc-live-timing/precache-manifest.6276db5ed476745beeb34eeb3f457b97.js"
+  "/stc-live-timing/precache-manifest.3b0f5e7221e6f9845cba309fc6e438be.js"
 );
 
 self.addEventListener('message', (event) => {
