@@ -2,6 +2,38 @@ import {Time} from './time';
 
 const axios = require('axios');
 
+export const getDOTY = async (url, dispatch) => {
+    let res = await axios.get(url);
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(res.data.contents, "text/html");
+    let data = {}
+    let startSkipping = false;
+    doc.querySelectorAll("body > table:nth-child(6) > tbody > tr").forEach(tr=>{
+        if (startSkipping){return}
+        let trs = tr.querySelectorAll('td');
+        trs = Array.prototype.slice.call(trs);
+        let name = trs[1].innerText;
+        trs = trs.slice(4);
+        
+        let points = trs.map(point=> parseFloat(point.innerText));
+        points = points.filter(a=>!isNaN(a));
+        startSkipping = points.length < 5 ? true : false;
+
+        if (startSkipping){return}
+
+        points = points.sort((a,b)=> b-a);
+        points = points.slice(0,6)
+
+        let lowTime = 0;
+        if (points.length > 5){
+            lowTime = points[5];
+        }
+        data[name] = {name:name, lowTime: lowTime, totalTimes: points.length, points:points};
+
+    })
+
+    return data;
+};
 
 export const getTiming = async (url, dispatch) => {
     let res = await axios.get(url);

@@ -28,8 +28,12 @@ export function AutoXTable(props) {
     let rows = data.map(row => {
         return createData(row.name, row.number, row.time, row.clazz, row.rawTimes, row.car, row.fastestIndex)
     })
+
     let topPaxtime = null;
-    if (rows.length > 1 && name === 'PAX'){
+
+    if (rows && rows.length > 1 && name === 'PAX'){
+        topPaxtime = rows[0].time;
+    } else if (rows && name !== "RAW"){
         topPaxtime = rows[0].time;
     }
     const classes = useStyles();

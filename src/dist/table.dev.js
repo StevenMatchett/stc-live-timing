@@ -64,7 +64,9 @@ function AutoXTable(props) {
   });
   var topPaxtime = null;
 
-  if (rows.length > 1 && name === 'PAX') {
+  if (rows && rows.length > 1 && name === 'PAX') {
+    topPaxtime = rows[0].time;
+  } else if (rows && name !== "RAW") {
     topPaxtime = rows[0].time;
   }
 

@@ -31,6 +31,8 @@ var _Modal = require("./Modal");
 
 var _dropdown = require("./dropdown");
 
+var _dotyTable = require("./dotyTable");
+
 var _context3 = require("./context/context");
 
 import React from "react";
@@ -102,7 +104,6 @@ var getRaw = function getRaw(results) {
 
       var noviceTimes = time.rawTimes.map(function (time) {
         time = time.split("+")[0];
-        console.log(paxMap[clazz]);
         return (time / paxMap[clazz]).toFixed(3);
       });
       return new _time.Time(time.clazz, time.name, runTime, time.number, noviceTimes, time.car, time.fastestIndex);
@@ -163,6 +164,14 @@ var LiveTiming = function LiveTiming(props) {
       topPax = _useState3[0],
       setTopPax = _useState3[1];
 
+  var _useState4 = (0, _react.useState)(null),
+      dotyData = _useState4[0],
+      setDoty = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      showDoty = _useState5[0],
+      setShowDoty = _useState5[1];
+
   var getData =
   /*#__PURE__*/
   function () {
@@ -215,6 +224,39 @@ var LiveTiming = function LiveTiming(props) {
     }
   };
 
+  var calculateDOTY = function calculateDOTY(dotyRes, pax) {
+    pax.forEach(function (driver) {
+      if (dotyRes[driver['name']]) {
+        var currentPointsForEvent = (pax[0].time / driver.time * 1000).toFixed(2);
+
+        if (dotyRes[driver['name']].lowTime < currentPointsForEvent) {
+          if (dotyRes[driver['name']].totalTimes == 6) {
+            dotyRes[driver['name']].points.pop();
+            dotyRes[driver['name']].points.push(currentPointsForEvent);
+          } else {
+            dotyRes[driver['name']].points.push(currentPointsForEvent);
+          }
+        }
+      }
+    });
+
+    var reducer = function reducer(accumulator, currentValue) {
+      return parseFloat(accumulator) + parseFloat(currentValue);
+    };
+
+    Object.keys(dotyRes).forEach(function (driver) {
+      dotyRes[driver].sum = dotyRes[driver].points.reduce(reducer);
+    });
+    var arr = Object.keys(dotyRes).map(function (driver) {
+      return dotyRes[driver];
+    });
+    arr = arr.sort(function (a, b) {
+      return a.sum > b.sum;
+    });
+    setDoty(arr);
+    console.log(arr);
+  };
+
   var _useStateValue = (0, _context3.useStateValue)(),
       _useStateValue2 = (0, _slicedToArray2.default)(_useStateValue, 2),
       _useStateValue2$ = _useStateValue2[0],
@@ -232,7 +274,7 @@ var LiveTiming = function LiveTiming(props) {
       _fetchData = (0, _asyncToGenerator2.default)(
       /*#__PURE__*/
       _regenerator.default.mark(function _callee2() {
-        var results, raw, pax, classList;
+        var results, dotyResults, raw, pax, classList;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -242,6 +284,11 @@ var LiveTiming = function LiveTiming(props) {
 
               case 2:
                 results = _context2.sent;
+                _context2.next = 5;
+                return getData((0, _service.getDOTY)("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/08/2020_event8_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
+
+              case 5:
+                dotyResults = _context2.sent;
                 raw = getRaw(results);
                 pax = getPax(results);
                 results['RAW'] = raw;
@@ -252,8 +299,9 @@ var LiveTiming = function LiveTiming(props) {
                 classList = ["PAX", "RAW"].concat((0, _toConsumableArray2.default)(classList.slice(0, classList.length - 2)));
                 setClasses(classList);
                 checkurl();
+                calculateDOTY(dotyResults, pax);
 
-              case 13:
+              case 17:
               case "end":
                 return _context2.stop();
             }
@@ -270,7 +318,7 @@ var LiveTiming = function LiveTiming(props) {
     return checkurl();
   };
 
-  return __jsx(_react.default.Fragment, null, data && classes && dropdown && __jsx("div", null, __jsx(_Modal.DriverModal, null), __jsx(_dropdown.Dropdown, {
+  return __jsx(_react.default.Fragment, null, data && classes && dropdown && !showDoty && __jsx("div", null, __jsx(_Modal.DriverModal, null), __jsx(_dropdown.Dropdown, {
     clazzes: classes
   }), __jsx("a", {
     style: {
@@ -279,12 +327,27 @@ var LiveTiming = function LiveTiming(props) {
       paddingTop: "1em"
     },
     href: "mailto:gosefroba22@gmail.com"
-  }, "Issue or Suggestion?"), dropdown !== 'PAX' && dropdown !== 'RAW' ? __jsx("div", null, __jsx("br", null), __jsx("div", null, "Time needed to match top PAX: ", (topPax / paxMap[dropdown]).toFixed(3))) : __jsx("div", null, __jsx("br", null), __jsx("div", null, "Number of runs: ", runCount, " "), __jsx("div", null, "Cones hit: ", conesHit)), __jsx(_table.AutoXTable, {
+  }, "Issue or Suggestion?"), __jsx("br", null), __jsx("a", {
+    style: {
+      float: "right",
+      paddingRight: "1em",
+      paddingTop: "1em"
+    },
+    onClick: function onClick() {
+      setShowDoty(true);
+    },
+    href: "#"
+  }, "Show Live DOTY"), dropdown !== 'PAX' && dropdown !== 'RAW' ? __jsx("div", null, __jsx("br", null), __jsx("div", null, "Time needed to match top PAX: ", (topPax / paxMap[dropdown]).toFixed(3))) : __jsx("div", null, __jsx("br", null), __jsx("div", null, "Number of runs: ", runCount, " "), __jsx("div", null, "Cones hit: ", conesHit)), __jsx(_table.AutoXTable, {
     class: "col",
     data: data[dropdown],
     name: dropdown,
     topPax: topPax
-  })));
+  })), data && classes && dropdown && showDoty && dotyData && __jsx(_dotyTable.DotyTable, {
+    data: dotyData,
+    onClose: function onClose() {
+      setShowDoty(false);
+    }
+  }));
 };
 
 exports.LiveTiming = LiveTiming;
