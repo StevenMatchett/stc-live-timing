@@ -16,8 +16,8 @@ const useStyles = makeStyles({
     height: "35px"
   });
 
-function createData(name, sum) {
-  return { name, sum};
+function createData(name, sum, lowest) {
+  return { name, sum, lowest};
 }
 
 export function DotyTable(props) {
@@ -26,7 +26,7 @@ export function DotyTable(props) {
 
 
     let rows = data.map(row => {
-        return createData(row.name, row.sum)
+        return createData(row.name, row.sum, row.lowest)
     })
 
     const classes = useStyles();
@@ -43,6 +43,7 @@ export function DotyTable(props) {
                                 <TableCell style={{ width: 25, color:"white" }} align="left">Position</TableCell>
                                 <TableCell style={{ color : "white"}} >Name</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Score</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Lowest scored Event</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -55,6 +56,7 @@ export function DotyTable(props) {
                                         <div>{row.name}</div>
                                     </TableCell>
                                     <TableCell align="left">{row.sum.toFixed(2)}</TableCell>
+                                    <TableCell align="left">{row.lowest}</TableCell>
                                    
                                 </TableRow>
                             )})}

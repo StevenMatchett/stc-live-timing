@@ -116,7 +116,14 @@ export const LiveTiming = (props) =>{
         const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
 
         Object.keys(dotyRes).forEach(driver=>{
+            let lowest = 1001;
+            dotyRes[driver].points.forEach(po=>{
+                if (parseFloat(po) < lowest){
+                    lowest = parseFloat(po);
+                }
+            });
             dotyRes[driver].sum = dotyRes[driver].points.reduce(reducer);
+            dotyRes[driver].lowest = lowest;
         });
 
         let arr = Object.keys(dotyRes).map(driver=>dotyRes[driver])
