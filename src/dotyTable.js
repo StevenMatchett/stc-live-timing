@@ -47,7 +47,6 @@ export function DotyTable(props) {
                         </TableHead>
                         <TableBody>
                             {rows.map((row,index) => {
-                                console.log(row)
                                 position++;
                                 return (
                                 <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>

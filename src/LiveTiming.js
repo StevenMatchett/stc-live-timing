@@ -124,14 +124,13 @@ export const LiveTiming = (props) =>{
             return a.sum > b.sum
         })
         setDoty(arr);
-        console.log(arr);
     }
 
     const [{dropdown, conesHit, runCount}, dispatch] = useStateValue();
     useEffect(() => {
         async function fetchData() {
             let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
-            let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/08/2020_event8_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
+            let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
 
             let raw = getRaw(results)
             let pax = getPax(results)
