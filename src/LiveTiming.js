@@ -128,7 +128,7 @@ export const LiveTiming = (props) =>{
 
         let arr = Object.keys(dotyRes).map(driver=>dotyRes[driver])
         arr = arr.sort((a,b)=>{
-            return a.sum > b.sum
+            return  b.sum - a.sum
         })
         setDoty(arr);
     }
