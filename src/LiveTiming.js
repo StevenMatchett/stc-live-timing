@@ -103,6 +103,9 @@ export const LiveTiming = (props) =>{
         pax.forEach(driver=>{
             if (dotyRes[driver['name']]){
                 let currentPointsForEvent = (pax[0].time/driver.time*1000).toFixed(2);
+                dotyRes[driver['name']].clazz = driver.clazz
+                dotyRes[driver['name']].currentEventScore = currentPointsForEvent
+                dotyRes[driver['name']].currentTime = driver.time;
                 if (dotyRes[driver['name']].lowTime < currentPointsForEvent){
                     if (dotyRes[driver['name']].totalTimes == 6){
                         dotyRes[driver['name']].points.pop();
@@ -111,6 +114,7 @@ export const LiveTiming = (props) =>{
                         dotyRes[driver['name']].points.push(currentPointsForEvent);
                     }
                 }
+                
             }
         })
         const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
@@ -188,7 +192,7 @@ export const LiveTiming = (props) =>{
             }
 
             {data && classes && dropdown && showDoty && dotyData &&
-                <DotyTable data={dotyData} onClose={()=>{setShowDoty(false)}} ></DotyTable>
+                <DotyTable data={dotyData} onClose={()=>{setShowDoty(false)}} topPax={topPax} paxMap={paxMap}></DotyTable>
             }
 
 
