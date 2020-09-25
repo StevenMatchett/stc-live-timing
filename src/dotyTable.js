@@ -67,6 +67,19 @@ export function DotyTable(props) {
                         </TableHead>
                         <TableBody>
                             {rows.map((row,index) => {
+                                if (index === 0){
+                                    return (
+                                        <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
+                                            <TableCell align="left">DSQ</TableCell>
+                                            <TableCell  component="th" scope="row">
+                                                <div>{row.name}</div>
+                                            </TableCell>
+                                            <TableCell align="left">{row.sum.toFixed(2)}</TableCell>
+                                            <TableCell align="left">Disqualified for an illegal tune in HS</TableCell>
+                                            <TableCell align="left"></TableCell>
+                                        </TableRow>
+                                    )
+                                }
                                 position++;
                                 return (
                                 <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
