@@ -26,7 +26,7 @@ function getNeedsToMoveUp(driver, above, topPax, paxMap){
     }
     let diff = above.sum - driver.sum;
 
-    if (1000 < diff + driver.lowest  ){
+    if (1000 < diff + driver.currentEventScore  ){
         return "Can't move up"
     } else if (!driver.currentEventScore){
         return "Can't move up if not running"
@@ -34,14 +34,8 @@ function getNeedsToMoveUp(driver, above, topPax, paxMap){
         if (driver.lowest !== driver.currentEventScore){
             diff += driver.lowest - driver.currentEventScore 
         }
-
         let pointsNeeded = ((parseFloat(driver.currentEventScore) + parseFloat(diff)))/1000 ;
-
-        let pax = paxMap[driver.clazz];
-
-        let time = pointsNeeded * topPax
-
-        return (time/pax).toFixed(3)
+        return (topPax/paxMap[driver.clazz] / pointsNeeded).toFixed(3)        
     }
 }
 
