@@ -1,11 +1,12 @@
 import React, {useState, useEffect}  from 'react';
-import {getTiming, getDOTY} from './service/service';
+import {getTiming, getDOTY, getClassResults} from './service/service';
 import {AutoXTable} from './table';
 import './App.css';
 import { Time } from './service/time';
 import { DriverModal } from './Modal';
 import { Dropdown } from './dropdown';
 import { DotyTable } from './dotyTable';
+import { ClassDotyTable } from './classDotyTable'
 import { useStateValue } from './context/context'
 
 const paxMap = {ss:.822,fsp:.823,as:.819,bs:.814,cs:.809,ds:.806,es:.794,fs:.803,gs:.792,hs:.78,hcs:.792,ssr:.843,"xs-a":.844,"xs-b":.864,ev:.824,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.823,sts:.812,stx:.816,str:.827,stu:.828,sth:.813,ssc:.801,smf:.841,sm:.854,ssm:.875,xp:.88,bp:.867,cp:.851,dp:.866,ep:.85,fp:.868,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.896,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
@@ -79,7 +80,8 @@ export const LiveTiming = (props) =>{
     const [topPax, setTopPax] = useState("");
     const [dotyData, setDoty] = useState(null);
     const [showDoty, setShowDoty] = useState(false)
-
+    const [showClassDoty, setShowClassDoty] = useState(false);
+    const [classDoty, setClassDoty] = useState(null);
 
     const getData = async (promise) => {
         return await promise;
@@ -97,7 +99,6 @@ export const LiveTiming = (props) =>{
             dispatch({type:"UPDATE_DROPDOWN", data: "PAX"})
         }
     }
-
 
     const calculateDOTY = (dotyRes, pax) => {
         pax.forEach(driver=>{
@@ -142,7 +143,7 @@ export const LiveTiming = (props) =>{
         async function fetchData() {
             let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
             let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
-
+            let classResults = await getData(getClassResults("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/10/2020membership__points.htm?cache=" + new Date().getTime(), dispatch));
             let raw = getRaw(results)
             let pax = getPax(results)
             results['RAW'] = raw;
@@ -153,7 +154,7 @@ export const LiveTiming = (props) =>{
             classList = ["PAX", "RAW", ...classList.slice(0,classList.length-2)]
             setClasses(classList)
             checkurl();
-
+            setClassDoty(classResults)
             calculateDOTY(dotyResults, pax)
         }
   
@@ -166,22 +167,24 @@ export const LiveTiming = (props) =>{
     
     return (
         <React.Fragment>
-            {data && classes && dropdown && !showDoty &&
+            {data && classes && dropdown && !showDoty && !showClassDoty &&
                 <div>
                     <DriverModal />
                     <Dropdown clazzes={classes} />
                     <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} href="mailto:gosefroba22@gmail.com">Issue or Suggestion?</a>  
                     <br/>
-                    <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowDoty(true)}}href="#">Show Live DOTY</a>  
+                    
 
                     {dropdown !== 'PAX' && dropdown !== 'RAW'
                         ?
                             <div>
+                                <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowClassDoty(true)}}href="#">Class DOTY</a>  
                                 <br/>
                                 <div>Time needed to match top PAX: {(topPax/paxMap[dropdown]).toFixed(3) }</div>
                             </div>
                         :
                             <div>
+                                <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowDoty(true)}}href="#">Show Live DOTY</a>  
                                 <br/>
                                 <div>Number of runs: {runCount} </div>
                                 <div>Cones hit: {conesHit}</div>
@@ -193,6 +196,9 @@ export const LiveTiming = (props) =>{
 
             {data && classes && dropdown && showDoty && dotyData &&
                 <DotyTable data={dotyData} onClose={()=>{setShowDoty(false)}} topPax={topPax} paxMap={paxMap}></DotyTable>
+            }
+            { data && classes && dropdown && showClassDoty && classDoty &&
+                <ClassDotyTable data={classDoty[dropdown]} onClose={()=>{setShowClassDoty(false)}} currentClassData={data[dropdown]}></ClassDotyTable>
             }
 
 
