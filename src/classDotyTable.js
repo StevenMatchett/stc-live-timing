@@ -49,6 +49,9 @@ export function ClassDotyTable(props) {
                                 <TableCell style={{ color : "white"}} >Name</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Score</TableCell>
                                 <TableCell style={{ color : "white"}} align="left">Lowest scored Event</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Scored Events</TableCell>
+                                <TableCell style={{ color : "white"}} align="left">Diff</TableCell>
+
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -62,7 +65,14 @@ export function ClassDotyTable(props) {
                                     </TableCell>
                                     <TableCell align="left">{row.sum.toFixed(2)}</TableCell>
                                     <TableCell align="left">{row.points[row.points.length-1]}</TableCell>
-                                   
+                                    <TableCell align="left">{row.points.length}</TableCell>
+                                    {index === 0 && 
+                                        <TableCell align="left">0</TableCell>
+                                    }
+                                    {index !== 0 && 
+                                        <TableCell align="left">{ (res[index-1].sum - row.sum).toFixed(2) }</TableCell>
+                                    }
+                                    
                                 </TableRow>
                             )})}
                         </TableBody>
