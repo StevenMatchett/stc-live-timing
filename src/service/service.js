@@ -73,9 +73,10 @@ export const getDOTY = async (url, dispatch) => {
 
 export const getTiming = async (url, dispatch) => {
     let res = await axios.get(url);
-
+    
     let parser = new DOMParser();
-    let doc = parser.parseFromString(res.data.contents, "text/html");
+    let doc = parser.parseFromString(res.data, "text/html");
+    
     let data = {};
     let currentClass = "";
     let maxNumberOfRuns = 0;

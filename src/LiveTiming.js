@@ -9,7 +9,7 @@ import { DotyTable } from './dotyTable';
 import { ClassDotyTable } from './classDotyTable'
 import { useStateValue } from './context/context'
 
-const paxMap = {ss:.822,fsp:.823,as:.819,bs:.814,cs:.809,ds:.806,es:.794,fs:.803,gs:.792,hs:.78,hcs:.792,ssr:.843,"xs-a":.844,"xs-b":.864,ev:.824,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.823,sts:.812,stx:.816,str:.827,stu:.828,sth:.813,ssc:.801,smf:.841,sm:.854,ssm:.875,xp:.88,bp:.867,cp:.851,dp:.866,ep:.85,fp:.868,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.896,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
+const paxMap = {ss:0.823,fsp:0.825,as:0.821,bs:0.814,cs:.809,ds:.807,es:.793,fs:.806,gs:.794,hs:.782,hcs:.796,ssr:.843,"xs-a":.838,"xs-b":.856,ev:.826,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.825,sts:.811,stx:.816,str:.827,stu:.828,sth:.813,ssc:.812,smf:.841,sm:.854,ssm:.875,xp:.882,bp:.867,cp:.851,dp:.866,ep:.85,fp:.871,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.898,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
 
 const getRaw = (results) => {
     const fixNovice = (times) => {
@@ -141,9 +141,9 @@ export const LiveTiming = (props) =>{
     const [{dropdown, conesHit, runCount}, dispatch] = useStateValue();
     useEffect(() => {
         async function fetchData() {
-            let results = await getData(getTiming("https://api.allorigins.win/get?url=stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
-            let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
-            let classResults = await getData(getClassResults("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/10/2020membership__points.htm?cache=" + new Date().getTime(), dispatch));
+            let results = await getData(getTiming("http://www.stcsolo.com/live/live.html?cache=" + new Date().getTime(), dispatch));
+            // let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
+            // let classResults = await getData(getClassResults("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/10/2020membership__points.htm?cache=" + new Date().getTime(), dispatch));
             let raw = getRaw(results)
             let pax = getPax(results)
             results['RAW'] = raw;
@@ -154,8 +154,8 @@ export const LiveTiming = (props) =>{
             classList = ["PAX", "RAW", ...classList.slice(0,classList.length-2)]
             setClasses(classList)
             checkurl();
-            setClassDoty(classResults)
-            calculateDOTY(dotyResults, pax)
+            // setClassDoty(classResults)
+            // calculateDOTY(dotyResults, pax)
         }
   
 
@@ -174,8 +174,8 @@ export const LiveTiming = (props) =>{
                     <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} href="mailto:gosefroba22@gmail.com">Issue or Suggestion?</a>  
                     <br/>
                     
-
-                    {dropdown !== 'PAX' && dropdown !== 'RAW'
+                    
+                    {/* {dropdown !== 'PAX' && dropdown !== 'RAW'
                         ?
                             <div>
                                 <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowClassDoty(true)}}href="#">Class DOTY</a>  
@@ -189,7 +189,7 @@ export const LiveTiming = (props) =>{
                                 <div>Number of runs: {runCount} </div>
                                 <div>Cones hit: {conesHit}</div>
                             </div>
-                    }
+                    } */}
                     <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} />
                 </div>
             }
