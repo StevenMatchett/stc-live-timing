@@ -7,7 +7,7 @@ export const reducer = (state, action) => {
     case 'UPDATE_DROPDOWN':
         return {...state, dropdown: action.data }
     case 'RUNS_AND_CONES':
-        return {...state, conesHit: action.data.conesHit, runCount: action.data.runCount, maxRuns: action.data.maxRuns}
+        return {...state, conesHit: action.data.conesHit, runCount: action.data.runCount, maxRuns: action.data.maxRuns, lastMod: action.data.lastMod}
     default:
         return state;
   }

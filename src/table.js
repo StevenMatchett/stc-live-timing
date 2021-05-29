@@ -43,7 +43,7 @@ export function AutoXTable(props) {
             <TableContainer component={Paper}>
                 <div>
                     <Table className={classes.table} aria-label="simple table" >
-                        <TableHead>
+                        <TableHead >
                             <TableRow style={{ background : "gray"}}>
                                 <TableCell style={{ width: 25, color:"white" }} align="left">Position</TableCell>
                                 <TableCell style={{ color : "white"}} >Name</TableCell>

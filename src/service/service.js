@@ -73,7 +73,15 @@ export const getDOTY = async (url, dispatch) => {
 
 export const getTiming = async (url, dispatch) => {
     let res = await axios.get(url);
-    
+    let lastMod = '';
+    if (res['headers']){
+        let options = {
+            hour: 'numeric', minute: 'numeric', second: 'numeric',
+          };
+
+        let date = new Date(res['headers']['last-modified'])
+        lastMod = new Intl.DateTimeFormat('en', options).format(date)
+    }
     let parser = new DOMParser();
     let doc = parser.parseFromString(res.data, "text/html");
     
@@ -138,7 +146,7 @@ export const getTiming = async (url, dispatch) => {
         }
     });
 
-    dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun, maxRuns: maxNumberOfRuns}})
+    dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun, maxRuns: maxNumberOfRuns, lastMod: lastMod}})
 
     
     return data;
