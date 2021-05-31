@@ -8,6 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useStateValue } from './context/context';
+import { ReactComponent as Cone } from './assets/traffic.svg'
 
 const useStyles = makeStyles({
     table: {
@@ -22,7 +23,7 @@ function createData(name, number, time, clazz, rawTimes, car, fastestIndex) {
 
 export function AutoXTable(props) {
 
-    let { data, name } = props
+    let { data, name, showTour } = props
     const [{maxRuns}, dispatch] = useStateValue();
 
     let rows = data.map(row => {
@@ -76,10 +77,12 @@ export function AutoXTable(props) {
 
                                    
                                     { (new Array(maxRuns)).fill().map( (em, index) => {
+                                        let append = <Cone style={{height: "10px"}}/>
+                                        let time = row.rawTimes.length > index ? row.rawTimes[index] : "";
                                         if (row.fastestIndex === index){
-                                            return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
+                                            return <TableCell align="left" style={{backgroundColor:"lightgreen"}}>{time} {time.includes('+') ? append : ""}</TableCell>
                                         } else {
-                                            return <TableCell align="left">{row.rawTimes.length > index ? row.rawTimes[index] : ""}</TableCell>
+                                            return <TableCell align="left">{time} {time.includes('+') ? append : ""}</TableCell>
                                         }
 
                                     })}

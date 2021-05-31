@@ -8,6 +8,8 @@ import { Dropdown } from './dropdown';
 import { DotyTable } from './dotyTable';
 import { ClassDotyTable } from './classDotyTable'
 import { useStateValue } from './context/context'
+import { TourTable } from './tourTable';
+import { ReactComponent as Cone } from './assets/traffic.svg'
 
 const paxMap = {ss:0.823,fsp:0.825,as:0.821,bs:0.814,cs:.809,ds:.807,es:.793,fs:.806,gs:.794,hs:.782,hcs:.796,ssr:.843,"xs-a":.838,"xs-b":.856,ev:.826,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.825,sts:.811,stx:.816,str:.827,stu:.828,sth:.813,ssc:.812,smf:.841,sm:.854,ssm:.875,xp:.882,bp:.867,cp:.851,dp:.866,ep:.85,fp:.871,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.898,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
 let reloadCountDown = 30;
@@ -47,7 +49,6 @@ const getRaw = (results) => {
 
 const getPax = (results) => {
     const applyPax = (times, clazz) => {
-        if (clazz === 'n') console.log(times)
         return times.map(time=>{
             let paxClass = time.clazz.startsWith('n') ? time.clazz.substring(1) : time.clazz;
             return new Time(time.clazz,time.name,(time.time*paxMap[paxClass]).toFixed(3),time.number, time.rawTimes, time.car, time.fastestIndex);
@@ -76,6 +77,7 @@ export const LiveTiming = (props) =>{
     const [showClassDoty, setShowClassDoty] = useState(false);
     const [classDoty, setClassDoty] = useState(null);
     const [nextRefresh, setNextRefresh] = useState(30);
+    const [showTour, setShowTour] = useState(false);
 
     const getData = async (promise) => {
         return await promise;
@@ -136,10 +138,69 @@ export const LiveTiming = (props) =>{
     useEffect(() => {
         async function fetchData() {
             let results = await getData(getTiming("http://www.stcsolo.com/live/live.html?cache=" + new Date().getTime(), dispatch));
+            let day1Results = await getData(getTiming("http://www.stcsolo.com/live/results_live.htm?cache=" + new Date().getTime(), dispatch));
             // let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
             // let classResults = await getData(getClassResults("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/10/2020membership__points.htm?cache=" + new Date().getTime(), dispatch));
+            let tempMap = {};
+            Object.keys(results).forEach(clazz => {
+                if (!day1Results[clazz]) return;
+
+                tempMap = {};
+                day1Results[clazz].forEach( r=> {
+                    tempMap[r.name] = r;
+                })
+                
+                results[clazz] = results[clazz].map(r => {
+
+                    if (tempMap[r.name]){
+                        r['day1'] = tempMap[r.name]['rawTimes']
+                        r['combinedTime'] = r['time'] + tempMap[r.name]['time']
+                        r['day1FastestIndex'] = tempMap[r.name]['fastestIndex']
+                        r['day1Best'] = tempMap[r.name]['time']
+                    }
+                    return r;
+                })
+            })
+            
             let raw = getRaw(results)
+            let rawDay1 = getRaw(day1Results)
+            tempMap = {};
+            rawDay1.forEach(r => {
+                tempMap[r.name] = r;
+            })
+            raw = raw.map(r => {
+
+                if (tempMap[r.name]){
+                    r['day1'] = tempMap[r.name]['rawTimes']
+                    r['combinedTime'] = r['time'] + tempMap[r.name]['time']
+                    r['day1FastestIndex'] = tempMap[r.name]['fastestIndex']
+                    r['day1Best'] = tempMap[r.name]['time']
+                }
+                return r;
+            })
+
+
             let pax = getPax(results)
+            
+            let paxDay1 = getPax(day1Results)
+
+            tempMap = {};
+            paxDay1.forEach(r => {
+                tempMap[r.name] = r;
+            })
+
+            pax = pax.map(r => {
+
+                if (tempMap[r.name]){
+                    r['day1'] = tempMap[r.name]['rawTimes']
+                    r['combinedTime'] = r['time'] + tempMap[r.name]['time']
+                    r['day1FastestIndex'] = tempMap[r.name]['fastestIndex']
+                    r['day1Best'] = tempMap[r.name]['time']
+                }
+                return r;
+            })
+
+
             results['RAW'] = raw;
             results['PAX'] = pax;
             setTopPax(results['PAX'][0].time)
@@ -178,7 +239,7 @@ export const LiveTiming = (props) =>{
     }
     
     window.onpopstate = e => checkurl();
-    
+    let showHideTourText = showTour ? "Hide Tour" : "Show Tour";
     return (
         <React.Fragment>
             {data && classes && dropdown && !showDoty && !showClassDoty &&
@@ -186,8 +247,7 @@ export const LiveTiming = (props) =>{
                     <DriverModal />
                     <span><Dropdown clazzes={classes} /></span>
                     
-                    <span><div style={{float:"right", paddingRight:".5em", paddingTop:"2em"}}>Updated: {lastMod}</div></span>
-                    <span ><button onClick={()=>reLoadNow()}>Refresh Now</button>{nextRefresh}</span>
+                    <span ><button style={{float:"right", margin:".5em", height:"45px"}} onClick={()=>setShowTour(!showTour)}>{showHideTourText} <Cone style={{height:"23px"}}/></button></span>
                     <br/>
 
                     
@@ -207,12 +267,19 @@ export const LiveTiming = (props) =>{
                                 <div>Cones hit: {conesHit}</div>
                             </div>
                     } */}
-                    {dropdown && dropdown === 'N' && 
-                        <AutoXTable class="col" data={getPax([data[dropdown]])} name={dropdown} topPax={topPax} />
+                    {dropdown && dropdown === 'N' && showTour && 
+                        <TourTable class="col" data={getPax([data[dropdown]])} name={dropdown} topPax={topPax} showTour={showTour}/>
                     }
-                    {dropdown && dropdown !== 'N' && 
-                        <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} />
+                    {dropdown && dropdown === 'N' && !showTour &&
+                        <AutoXTable class="col" data={getPax([data[dropdown]])} name={dropdown} topPax={topPax} showTour={showTour}/>
                     }
+                    {dropdown && dropdown !== 'N' && showTour && 
+                        <TourTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} />
+                    }
+                    {dropdown && dropdown !== 'N' && !showTour &&
+                        <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} />
+                    }
+
                 </div>
             }
 
