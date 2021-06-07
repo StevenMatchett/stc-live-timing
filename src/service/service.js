@@ -1,5 +1,5 @@
 import {Time} from './time';
-
+import { TimeController } from './TimeController.js'
 const axios = require('axios');
 
 export const getClassResults = async(url) => {
@@ -148,6 +148,6 @@ export const getTiming = async (url, dispatch) => {
 
     dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun, maxRuns: maxNumberOfRuns, lastMod: lastMod}})
 
-    
-    return data;
+    return new TimeController(data);
+    // return data;
 }

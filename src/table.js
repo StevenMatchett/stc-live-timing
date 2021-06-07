@@ -36,6 +36,7 @@ export function AutoXTable(props) {
     } else if (rows && name !== "RAW"){
         topPaxtime = rows[0].time;
     }
+    console.log(topPaxtime)
     const classes = useStyles();
     let position = 0;
     return (
