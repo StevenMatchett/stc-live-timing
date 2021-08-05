@@ -90,6 +90,7 @@ export const getTiming = async (url, dispatch) => {
     let maxNumberOfRuns = 0;
     let conesHit = 0;
     let numberOfRun = 0;
+    console.log(doc)
     doc.querySelectorAll("body > a > table:nth-child(4) > tbody > tr").forEach(tr=> {
         if (tr.querySelector("th")){
             currentClass = tr.querySelector("a").name;
@@ -107,7 +108,9 @@ export const getTiming = async (url, dispatch) => {
             let rawTimes = [];
             let fastest = 999;
             let fastestIndex = -1;
+            console.log(times.length)
             times.forEach((timeHtml,index) => {
+                if (index===0) return;
                 let time = timeHtml.innerText.split("+").map(s=>s.trim());
                 rawTimes.push(timeHtml.innerText.trim());
                 if (time.length === 1){
@@ -147,7 +150,7 @@ export const getTiming = async (url, dispatch) => {
     });
 
     dispatch({type:"RUNS_AND_CONES", data:{conesHit:conesHit, runCount: numberOfRun, maxRuns: maxNumberOfRuns, lastMod: lastMod}})
-
+    console.log(data)
     
     return data;
 }

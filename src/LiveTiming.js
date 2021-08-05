@@ -4,9 +4,9 @@ import {AutoXTable} from './table';
 import './App.css';
 import { Time } from './service/time';
 import { DriverModal } from './Modal';
-import { Dropdown } from './dropdown';
+import { Dropdown } from './Dropdown';
 import { DotyTable } from './dotyTable';
-import { ClassDotyTable } from './classDotyTable'
+// import { ClassDotyTable } from './classDotyTable'
 import { useStateValue } from './context/context'
 import { TourTable } from './tourTable';
 import { ReactComponent as Cone } from './assets/traffic.svg'
@@ -240,6 +240,8 @@ export const LiveTiming = (props) =>{
     
     window.onpopstate = e => checkurl();
     let showHideTourText = showTour ? "Hide Tour" : "Show Tour";
+    let timeNeeded = topPax / paxMap[dropdown.toLowerCase()]
+
     return (
         <React.Fragment>
             {data && classes && dropdown && !showDoty && !showClassDoty &&
@@ -247,7 +249,7 @@ export const LiveTiming = (props) =>{
                     <DriverModal />
                     <span><Dropdown clazzes={classes} /></span>
                     
-                    <span ><button style={{float:"right", margin:".5em", height:"45px"}} onClick={()=>setShowTour(!showTour)}>{showHideTourText} <Cone style={{height:"23px"}}/></button></span>
+                    <span ><button style={{float:"right", margin:".5em", height:"45px", display: "none"}} onClick={()=>setShowTour(!showTour)}>{showHideTourText} <Cone style={{height:"23px"}}/></button></span>
                     <br/>
 
                     
@@ -273,22 +275,23 @@ export const LiveTiming = (props) =>{
                     {dropdown && dropdown === 'N' && !showTour &&
                         <AutoXTable class="col" data={getPax([data[dropdown]])} name={dropdown} topPax={topPax} showTour={showTour}/>
                     }
+            
                     {dropdown && dropdown !== 'N' && showTour && 
-                        <TourTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} />
+                        <TourTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} timeNeeded={timeNeeded} />
                     }
                     {dropdown && dropdown !== 'N' && !showTour &&
-                        <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} />
+                        <AutoXTable class="col" data={data[dropdown]} name={dropdown} topPax={topPax} showTour={showTour} timeNeeded={timeNeeded} />
                     }
 
                 </div>
             }
 
-            {data && classes && dropdown && showDoty && dotyData &&
+            {/* {data && classes && dropdown && showDoty && dotyData &&
                 <DotyTable data={dotyData} onClose={()=>{setShowDoty(false)}} topPax={topPax} paxMap={paxMap}></DotyTable>
             }
             { data && classes && dropdown && showClassDoty && classDoty &&
                 <ClassDotyTable data={classDoty[dropdown]} onClose={()=>{setShowClassDoty(false)}} currentClassData={data[dropdown]}></ClassDotyTable>
-            }
+            } */}
 
 
         </React.Fragment>
