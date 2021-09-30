@@ -28,7 +28,6 @@ export function ClassDotyTable(props) {
 
     let res = Object.keys(data).map(name => {
         data[name].sum = data[name].points.reduce((accumulator, currentValue) => accumulator + currentValue);
-        console.log(name, data[name].sum)
         return data[name]
     }).sort((a,b)=>{
         return b.time - a.time;

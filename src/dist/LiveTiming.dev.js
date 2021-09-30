@@ -29,7 +29,7 @@ var _time = require("./service/time");
 
 var _Modal = require("./Modal");
 
-var _dropdown = require("./dropdown");
+var _dropdown = require("./Dropdown");
 
 var _dotyTable = require("./dotyTable");
 

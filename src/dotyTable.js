@@ -16,35 +16,16 @@ const useStyles = makeStyles({
     height: "35px"
   });
 
-function createData(name, sum, lowest, currentEventScore,currentTime, clazz) {
-  return { name, sum, lowest, currentEventScore,currentTime, clazz};
-}
-
-function getNeedsToMoveUp(driver, above, topPax, paxMap){
-    if (!above){
-        return "Lonely at the top Caleb"
-    }
-    let diff = above.sum - driver.sum;
-
-    if (1000 < diff + driver.currentEventScore  ){
-        return "Can't move up"
-    } else if (!driver.currentEventScore){
-        return "Can't move up if not running"
-    } else {
-        if (driver.lowest !== driver.currentEventScore){
-            diff += driver.lowest - driver.currentEventScore 
-        }
-        let pointsNeeded = ((parseFloat(driver.currentEventScore) + parseFloat(diff)))/1000 ;
-        return (topPax/paxMap[driver.clazz] / pointsNeeded).toFixed(3)        
-    }
+function createData(name, sum, low, current) {
+  return { name, sum, low, current};
 }
 
 export function DotyTable(props) {
-    let { data, onClose} = props
+    let { doty } = props
 
 
-    let rows = data.map(row => {
-        return createData(row.name, row.sum, row.lowest, row.currentEventScore,row.currentTime, row.clazz)
+    let rows = doty.map(row => {
+        return createData( row.name, row.score, row.low, row.current )
     })
 
     const classes = useStyles();
@@ -52,45 +33,31 @@ export function DotyTable(props) {
 
     return (
         <React.Fragment>    
-            <a href="#" onClick={onClose} >Back</a>
             <TableContainer component={Paper}>
                 <div>
                     <Table className={classes.table} aria-label="simple table" >
                         <TableHead>
                             <TableRow style={{ background : "gray"}}>
-                                <TableCell style={{ width: 25, color:"white" }} align="left">Position</TableCell>
-                                <TableCell style={{ color : "white"}} >Name</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">Score</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">Lowest scored Event</TableCell>
-                                <TableCell style={{ color : "white"}} align="left">Raw time need to move up</TableCell>
+                                <TableCell style={{width:"5%", color:"white" }} align="left">Place</TableCell>
+                                <TableCell style={{ width:"20%", color : "white"}} >Name</TableCell>
+                                <TableCell style={{ width:"20%",color : "white"}} align="left">Score</TableCell>
+                                <TableCell style={{ width:"20%",color : "white"}} >Lowest Event</TableCell>
+                                <TableCell style={{ width:"20%",color : "white"}} >Average Event</TableCell>
+                                <TableCell style={{ width:"20%",color : "white"}} >Current Event</TableCell>
+
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {rows.map((row,index) => {
-                                if (index === 0){
-                                    return (
-                                        <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
-                                            <TableCell align="left">DSQ</TableCell>
-                                            <TableCell  component="th" scope="row">
-                                                <div>{row.name}</div>
-                                            </TableCell>
-                                            <TableCell align="left">{row.sum.toFixed(2)}</TableCell>
-                                            <TableCell align="left">Disqualified for an illegal tune in HS</TableCell>
-                                            <TableCell align="left"></TableCell>
-                                        </TableRow>
-                                    )
-                                }
                                 position++;
                                 return (
                                 <TableRow style ={ index % 2 ? { background : "#f2f2f2" }: {}    }>
-                                    <TableCell align="left">{position}</TableCell>
-                                    <TableCell  component="th" scope="row">
-                                        <div>{row.name}</div>
-                                    </TableCell>
-                                    <TableCell align="left">{row.sum.toFixed(2)}</TableCell>
-                                    <TableCell align="left">{row.lowest}</TableCell>
-                                    <TableCell align="left">{getNeedsToMoveUp(row, rows[index-1], props.topPax, props.paxMap)}</TableCell>
-                                   
+                                    <TableCell style={{width:"5%"}}  align="left">{position}</TableCell>
+                                    <TableCell style={{width:"20%"}} component="th" scope="row"><div>{row.name}</div></TableCell>
+                                    <TableCell style={{width:"20%"}} align="left">{row.sum.toFixed(2)}</TableCell>
+                                    <TableCell style={{width:"20%"}} align="left">{row.low.toFixed(2)}</TableCell>
+                                    <TableCell style={{width:"20%"}} align="left">{(row.sum/6).toFixed(2)}</TableCell>
+                                    <TableCell style={{width:"20%"}} align="left">{row.current ? row.current.toFixed(2) : ""}</TableCell>
                                 </TableRow>
                             )})}
                         </TableBody>

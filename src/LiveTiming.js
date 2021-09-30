@@ -4,10 +4,11 @@ import {AutoXTable} from './table';
 import './App.css';
 import { Time } from './service/time';
 import { DriverModal } from './Modal';
-import { Dropdown } from './dropdown';
+import { Dropdown } from './Dropdown';
 import { DotyTable } from './dotyTable';
-import { ClassDotyTable } from './classDotyTable'
 import { useStateValue } from './context/context'
+import { dotyData } from './doty';
+import { DriverTable } from './DriverTable';
 
 const paxMap = {ss:0.823,fsp:0.825,as:0.821,bs:0.814,cs:.809,ds:.807,es:.793,fs:.806,gs:.794,hs:.782,hcs:.796,ssr:.843,"xs-a":.838,"xs-b":.856,ev:.826,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.825,sts:.811,stx:.816,str:.827,stu:.828,sth:.813,ssc:.812,smf:.841,sm:.854,ssm:.875,xp:.882,bp:.867,cp:.851,dp:.866,ep:.85,fp:.871,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.898,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
 let reloadCountDown = 30;
@@ -47,7 +48,6 @@ const getRaw = (results) => {
 
 const getPax = (results) => {
     const applyPax = (times, clazz) => {
-        if (clazz === 'n') console.log(times)
         return times.map(time=>{
             let paxClass = time.clazz.startsWith('n') ? time.clazz.substring(1) : time.clazz;
             return new Time(time.clazz,time.name,(time.time*paxMap[paxClass]).toFixed(3),time.number, time.rawTimes, time.car, time.fastestIndex);
@@ -71,7 +71,7 @@ export const LiveTiming = (props) =>{
     const [data, setData] = useState();
     const [classes, setClasses] = useState("");
     const [topPax, setTopPax] = useState("");
-    const [dotyData, setDoty] = useState(null);
+    const [doty, setDoty] = useState(null);
     const [showDoty, setShowDoty] = useState(false)
     const [showClassDoty, setShowClassDoty] = useState(false);
     const [classDoty, setClassDoty] = useState(null);
@@ -94,47 +94,53 @@ export const LiveTiming = (props) =>{
         }
     }
 
-    const calculateDOTY = (dotyRes, pax) => {
+    function calculateDOTY( pax) {
+        const topPax = pax[0].time;
+        let dotyDataCopy = JSON.parse(JSON.stringify(dotyData))
         pax.forEach(driver=>{
-            if (dotyRes[driver['name']]){
-                let currentPointsForEvent = (pax[0].time/driver.time*1000).toFixed(2);
-                dotyRes[driver['name']].clazz = driver.clazz
-                dotyRes[driver['name']].currentEventScore = currentPointsForEvent
-                dotyRes[driver['name']].currentTime = driver.time;
-                if (dotyRes[driver['name']].lowTime < currentPointsForEvent){
-                    if (dotyRes[driver['name']].totalTimes == 6){
-                        dotyRes[driver['name']].points.pop();
-                        dotyRes[driver['name']].points.push(currentPointsForEvent);
-                    } else {
-                        dotyRes[driver['name']].points.push(currentPointsForEvent);
-                    }
-                }
-                
+            let currentPoints = topPax/driver.time*1000;
+            if (dotyDataCopy[driver.name]){
+                dotyDataCopy[driver.name].scores.push(currentPoints);
+                dotyDataCopy[driver.name].scores.sort((a,b)=>b-a);
+                dotyDataCopy[driver.name].current = currentPoints
             }
         })
-        const reducer = (accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue);
 
-        Object.keys(dotyRes).forEach(driver=>{
-            let lowest = 1001;
-            dotyRes[driver].points.forEach(po=>{
-                if (parseFloat(po) < lowest){
-                    lowest = parseFloat(po);
-                }
-            });
-            dotyRes[driver].sum = dotyRes[driver].points.reduce(reducer);
-            dotyRes[driver].lowest = lowest;
+        const addArray = (arr)=> {
+            let sum = 0;
+            arr.slice(0,6).forEach(r => sum+= r)
+            return sum;
+        }
+        let results = Object.keys(dotyDataCopy).map(driverName=> {
+            const sum = addArray(dotyDataCopy[driverName].scores);
+            return {name: driverName, score: sum, low: dotyDataCopy[driverName].scores[5], current: dotyDataCopy[driverName].current};
+
+        }).filter(a => a)
+
+        
+        var mapped = results.map(function (el, i) {
+            return {
+                index: i, 
+                value: el.score
+            };
         });
-
-        let arr = Object.keys(dotyRes).map(driver=>dotyRes[driver])
-        arr = arr.sort((a,b)=>{
-            return  b.sum - a.sum
-        })
-        setDoty(arr);
+    
+        // sorting the mapped array containing the reduced values
+        mapped.sort(function (b, a) {
+            return a.value - b.value || a.index - b.index;
+        });
+        
+        // container for the resulting order
+        var result = mapped.map(function (el) {
+            return results[el.index];
+        });
+        setDoty(result)
     }
 
     const [{dropdown, conesHit, runCount, lastMod}, dispatch] = useStateValue();
     useEffect(() => {
         async function fetchData() {
+
             let results = await getData(getTiming("http://www.stcsolo.com/live/live.html?cache=" + new Date().getTime(), dispatch));
             // let dotyResults = await getData(getDOTY("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/09/2020_event9_paxpoints_6scores.htm?cache=" + new Date().getTime(), dispatch));
             // let classResults = await getData(getClassResults("https://api.allorigins.win/get?url=stcsolo.com/wp-content/uploads/2020/10/2020membership__points.htm?cache=" + new Date().getTime(), dispatch));
@@ -148,8 +154,7 @@ export const LiveTiming = (props) =>{
             classList = ["PAX", "RAW", ...classList.slice(0,classList.length-2)]
             setClasses(classList)
             checkurl();
-            // setClassDoty(classResults)
-            // calculateDOTY(dotyResults, pax)
+            calculateDOTY(pax)
         }
 
         fetchData()
@@ -169,7 +174,6 @@ export const LiveTiming = (props) =>{
         return () => clearInterval(interval);
         
 
-        // return setInterval(async ()=> await fetchData(),30000)
 
     },[]);
 
@@ -187,26 +191,10 @@ export const LiveTiming = (props) =>{
                     <span><Dropdown clazzes={classes} /></span>
                     
                     <span><div style={{float:"right", paddingRight:".5em", paddingTop:"2em"}}>Updated: {lastMod}</div></span>
-                    <span ><button onClick={()=>reLoadNow()}>Refresh Now</button>{nextRefresh}</span>
+                    <span ><button onClick={()=>setShowDoty(true)}>Live DOTY</button></span>
                     <br/>
 
-                    
-                    
-                    {/* {dropdown !== 'PAX' && dropdown !== 'RAW'
-                        ?
-                            <div>
-                                <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowClassDoty(true)}}href="#">Class DOTY</a>  
-                                <br/>
-                                <div>Time needed to match top PAX: {(topPax/paxMap[dropdown]).toFixed(3) }</div>
-                            </div>
-                        :
-                            <div>
-                                <a style={{float:"right", paddingRight:"1em", paddingTop:"1em"}} onClick={()=>{setShowDoty(true)}}href="#">Show Live DOTY</a>  
-                                <br/>
-                                <div>Number of runs: {runCount} </div>
-                                <div>Cones hit: {conesHit}</div>
-                            </div>
-                    } */}
+
                     {dropdown && dropdown === 'N' && 
                         <AutoXTable class="col" data={getPax([data[dropdown]])} name={dropdown} topPax={topPax} />
                     }
@@ -215,13 +203,20 @@ export const LiveTiming = (props) =>{
                     }
                 </div>
             }
+            {data && classes && dropdown && showDoty && 
+                <div>
+                    <DriverModal />
+                    <span><Dropdown clazzes={classes} /></span>
+                    
+                    <span><div style={{float:"right", paddingRight:".5em", paddingTop:"2em"}}>Updated: {lastMod}</div></span>
+                    <span ><button onClick={()=>setShowDoty(false)}>Hide DOTY</button></span>
+                    <br/>
 
-            {data && classes && dropdown && showDoty && dotyData &&
-                <DotyTable data={dotyData} onClose={()=>{setShowDoty(false)}} topPax={topPax} paxMap={paxMap}></DotyTable>
+                    <DotyTable  doty={doty} />
+                </div>
             }
-            { data && classes && dropdown && showClassDoty && classDoty &&
-                <ClassDotyTable data={classDoty[dropdown]} onClose={()=>{setShowClassDoty(false)}} currentClassData={data[dropdown]}></ClassDotyTable>
-            }
+
+         
 
 
         </React.Fragment>
