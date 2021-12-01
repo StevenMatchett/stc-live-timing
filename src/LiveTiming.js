@@ -10,7 +10,7 @@ import { useStateValue } from './context/context'
 import { dotyData } from './doty';
 import { DriverTable } from './DriverTable';
 
-const paxMap = {ss:0.823,fsp:0.825,as:0.821,bs:0.814,cs:.809,ds:.807,es:.793,fs:.806,gs:.794,hs:.782,hcs:.796,ssr:.843,"xs-a":.838,"xs-b":.856,ev:.826,ssp:.853,asp:.849,bsp:.852,csp:.865,dsp:.842,esp:.839,fsf:.825,sts:.811,stx:.816,str:.827,stu:.828,sth:.813,ssc:.812,smf:.841,sm:.854,ssm:.875,xp:.882,bp:.867,cp:.851,dp:.866,ep:.85,fp:.871,hcr:.815,am:1,bm:.962,cm:.893,dm:.895,em:.898,fm:.911,fsae:.963,km:.93,ja:.855,jb:.82,jc:.718,camc:.818,camt:.817,cams:.833,}
+const paxMap = {ss:0.830,fsp:0.824,as:0.821,bs:0.818,cs:0.810,ds:0.806,es:0.792,fs:0.805,gs:0.794,hs:0.786,hcs:0.793,ssr:0.842,"xs-a":0.843,"xs-b":0.854,ev:0.835,ssp:0.853,asp:0.848,bsp:0.852,csp:0.864,dsp:0.844,esp:0.840,fsf:0.824,sts:0.813,stx:0.817,str:0.828,stu:0.829,sth:0.812,ssc:0.808,smf:0.845,sm:0.861,ssm:0.883,xp:0.885,bp:0.867,cp:0.851,dp:0.865,ep:0.849,fp:0.874,hcr:0.814,am:1,bm:0.988,cm:0.895,dm:0.898,em:0.909,fm:0.908,fsae:0.989,km:0.931,ja:.855,jb:.82,jc:.718,camc:0.819,camt:0.816,cams:0.839,}
 let reloadCountDown = 30;
 
 const getRaw = (results) => {
